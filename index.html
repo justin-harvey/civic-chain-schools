@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Civic-Chain: School Purchasing-Card Controls (Demo)</title>
+  <meta name="description" content="Demonstration of CivicChain purchasing-card spend controls for K-12 school districts: virtual cards bound to budget codes, real-time MCC decline at authorization, pool exhaustion hard-decline, and a redacted public settlement ledger. Illustrative sample data.">
+  <meta name="robots" content="index,follow">
+
+  <meta property="og:title" content="Civic-Chain: School Purchasing-Card Controls (Demo)">
+  <meta property="og:description" content="Virtual cards bound to budget codes, out-of-policy declines at the register, and board reporting as a query — for K-12 districts. Illustrative demo.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/brand/civic-chain-social-preview.webp">
+
+  <link rel="icon" href="/brand/favico.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Text:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <img class="brand-logo" src="/brand/civic-logo-w-text-horizontal.svg" alt="CivicChain">
+      <span class="header-spacer"></span>
+      <div class="profile-select">
+        <label for="profile">District profile</label>
+        <select id="profile" aria-label="District profile">
+          <option value="rsu">Pinebrook Regional School Unit (RSU)</option>
+          <option value="municipal">Alder Falls — Municipal school unit</option>
+          <option value="sad">School Administrative District 7 (SAD)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">CivicChain · K-12 spend control</div>
+      <h1>See every card dollar at the register, not at the audit.</h1>
+      <p class="lede">
+        School districts run p-card programs through a bank: broad category blocks, monthly
+        statements, and reconciliation to budget codes weeks after the money moved. CivicChain
+        issues virtual cards <strong>bound to a budget code</strong>, enforces the merchant-category
+        allowlist <strong>at authorization</strong>, and writes a redacted public record at
+        settlement — so board reporting is a query, not a project.
+      </p>
+      <div id="entity-note" class="entity-note"></div>
+      <div class="disclaimer">
+        <strong>This is a demonstration.</strong> Every figure is illustrative sample data. District
+        names are archetypes, not real districts. Chart-of-account codes follow the structure of the
+        Maine DOE handbook but are modeled for the demo, and the ledger anchoring / tamper-evidence is
+        modeled. Nothing here is legal, financial, or audit advice.
+      </div>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Demo sections">
+      <button class="tab" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+      <button class="tab" role="tab" data-tab="cards">Cards &amp; pools</button>
+      <button class="tab" role="tab" data-tab="sim">Authorization simulator</button>
+      <button class="tab" role="tab" data-tab="ledger">Public ledger</button>
+      <button class="tab" role="tab" data-tab="reporting">Board reporting</button>
+      <button class="tab" role="tab" data-tab="receipts">Receipts</button>
+      <button class="tab" role="tab" data-tab="coa">Chart of accounts</button>
+    </nav>
+
+    <section class="panel" id="panel-overview" data-active="true" role="tabpanel">
+      <h2>How it works</h2>
+      <p class="sub">Cards are scoped to budget codes in three tiers, funded from per-code pools, and policed at the authorization webhook.</p>
+      <div id="overview"></div>
+    </section>
+
+    <section class="panel" id="panel-cards" role="tabpanel">
+      <h2>Cards &amp; pools</h2>
+      <p class="sub">Three tiers — District, Building, Individual — each bound to a budget code (not a person) and drawing on that code's pool. Green chips are the merchant categories (MCCs) the card may use.</p>
+      <div id="cards"></div>
+    </section>
+
+    <section class="panel" id="panel-sim" role="tabpanel">
+      <h2>Authorization simulator</h2>
+      <p class="sub">This is the control: pick a card, a merchant, and an amount, then run the authorization webhook. Out-of-policy categories and exhausted pools decline in real time, with a reason the cardholder sees.</p>
+      <div class="sim">
+        <div class="terminal">
+          <label for="sim-card">Card</label>
+          <select id="sim-card"></select>
+          <label for="sim-merchant">Merchant (carries an MCC)</label>
+          <select id="sim-merchant"></select>
+          <label for="sim-amount">Amount (USD)</label>
+          <input type="number" id="sim-amount" value="120" min="0" step="0.01">
+          <button class="swipe" id="sim-run">Run authorization →</button>
+        </div>
+        <div class="receipt-slip" id="slip"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-ledger" role="tabpanel">
+      <h2>Public ledger</h2>
+      <div id="ledger"></div>
+    </section>
+
+    <section class="panel" id="panel-reporting" role="tabpanel">
+      <h2>Board reporting</h2>
+      <p class="sub">Filter settled spend by building and date range and export it. Because each transaction was pre-coded to the chart of accounts at authorization, the export needs no manual coding.</p>
+      <div id="reporting"></div>
+    </section>
+
+    <section class="panel" id="panel-receipts" role="tabpanel">
+      <h2>Receipts</h2>
+      <div id="receipts"></div>
+    </section>
+
+    <section class="panel" id="panel-coa" role="tabpanel">
+      <h2>Chart-of-accounts mapping</h2>
+      <p class="sub">Every budget code resolves to a full COA string, so spend reconciles to the district's accounts automatically.</p>
+      <div id="coa"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>CivicChain — transparent public ledgers. This K-12 purchasing-card demo uses illustrative data only;
+      see the <a href="https://www.maine.gov/doe/funding/accounting/handbook" target="_blank" rel="noopener">Maine DOE School Finance handbook</a> for the real chart-of-accounts standard.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

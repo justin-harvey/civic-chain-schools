@@ -1,0 +1,11 @@
+[build]
+  publish = "."
+
+# Self-contained static demo of the Civic-Chain K-12 purchasing-card product.
+# No build step: Netlify serves these files as-is. index.html is the entry.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
